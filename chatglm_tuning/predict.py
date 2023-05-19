@@ -26,14 +26,13 @@ tokenizer = AutoTokenizer.from_pretrained("yuanzhoulvpi/chatglm6b-dddd", trust_r
 # text = "请告诉我包含[微信,支付]关键词的问句有哪些"
 # text = "跟[比亚迪的车怎样]相似问句有哪些"
 # text = "帮我生成12条与[一体机适不适合打游戏]相似的问句"
-text = "帮我生成12条与[请问员工工作进度落后,管理者应该怎么办]相关的问题"
-# text = "[美国CPI为何暴涨]问句包含哪些关键词"
-# with torch.autocast("cuda"):
-#     res, history = model.chat(tokenizer=tokenizer, query=text,max_length=256)
-#     print(res)
-#
-# exit()
+#text = "帮我生成12条与[请问员工工作进度落后,管理者应该怎么办]相关的问题"
 
+
+# text= "帮我生成10条包含[流量,套餐]关键词的问句"
+# text = "[美国CPI为何暴涨]问句包含哪些关键词"
+# text = "帮我生成12条与[dota游戏中哪些英雄可以当后期]相似的问句"
+text = "帮我生成9条与[炒股软件哪个好用]相似的问句"
 
 with torch.autocast("cuda"):
     ids = tokenizer.encode(text)
@@ -42,35 +41,15 @@ with torch.autocast("cuda"):
         input_ids=input_ids,
         max_length=200,
         do_sample=True,
-        top_p=0.65,
+        top_p=0.7,
         temperature=0.95,
-        # top_k=40,
+        top_k=40,
         eos_token_id=150005,
         repetition_penalty = 1.3,
-        # length_penalty = 1.0,
     )
 
 
     out_text = tokenizer.decode(out[0])
-    print(text)
-    # print(out_text)
-    # answer = out_text.replace(text, "").replace("\nEND", "").strip().split('\n\n')[0]
+    print(text+'\n')
     answer = out_text.replace(text, "").strip().split('\n\n')[0]
     print(answer)
-    # end_index = -1
-    # last_sep = -1
-    # for i, item in enumerate(answer):
-    #     if item == '[MASK]':
-    #         text[i] = ''
-    #     elif item == '[CLS]':
-    #         text[i] = '\n'
-    #     elif item == '\n\n':
-    #         last_sep = i
-    #         break
-    #     elif item == '</s>':
-    #         end_index = i
-    #         break
-    # print(end_index, last_sep)
-    # answer = answer[:end_index]
-    # answer = answer[:last_sep]
-    # print(answer)
